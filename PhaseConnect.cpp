@@ -56,7 +56,6 @@ void TallyLight::connectInit() {
     connectSetup(force, reset, format);
   }
 
-  startPhase(RUN_PHASE);
 }
 
 void TallyLight::connectSetup(boolean force, boolean reset, boolean format) {
@@ -64,10 +63,10 @@ void TallyLight::connectSetup(boolean force, boolean reset, boolean format) {
 
   WiFi.mode(WIFI_STA);
 
-  //set config save notify callback
   ESP_WiFiManager wifiManager;
 
   wifiManager.setConfigPortalTimeout(120); 
+  //set config save notify callback
   wifiManager.setSaveConfigCallback(connectSaveCallback);
 
   //set static ip
@@ -76,13 +75,9 @@ void TallyLight::connectSetup(boolean force, boolean reset, boolean format) {
   // define and add all your parameters here
   ESP_WMParameter parameterTallyControllerIp("tallyControllerIp", "Tally Controller IP", tallyControllerIp, 15);
   ESP_WMParameter parameterTallyLightName   ("tallyLightName"   , "Tally Light Name"   , tallyLightName   , 32);
-//ESP_WMParameter parameterWifiSsid         ("wifiSsid"         , "SSID"               , wifiSsid         , 32); 
-//ESP_WMParameter parameterWifiPassword     ("wifiPassword"     , "Password"           , wifiPassword     , 32); 
 
   wifiManager.addParameter(&parameterTallyControllerIp);
   wifiManager.addParameter(&parameterTallyLightName);
-//wifiManager.addParameter(&parameterTallyControllerIp); 
-//wifiManager.addParameter(&parameterTallyLightName); 
 
   // run special actions on demand
   if (format) {
@@ -100,13 +95,8 @@ void TallyLight::connectSetup(boolean force, boolean reset, boolean format) {
 
   bool wifiManagerState;
 
-//  if (force) {
-    Serial.println("startConfigPortal(TallyLight, ****)");
-    wifiManagerState = wifiManager.startConfigPortal(TALLY_LIGHT_ESSID, TALLY_LIGHT_PASSWORD);
-//  } else {
-//    Serial.println("autoConnect(TallyLight, ****)");
-//    wifiManagerState = wifiManager.autoConnect(TALLY_LIGHT_ESSID, TALLY_LIGHT_PASSWORD);
-//  }
+  Serial.println("startConfigPortal(TallyLight, ****)");
+  wifiManagerState = wifiManager.startConfigPortal(TALLY_LIGHT_ESSID, TALLY_LIGHT_PASSWORD);
       
   if (!wifiManagerState) {
     Serial.println("failed to connect and hit timeout");
@@ -133,8 +123,6 @@ void TallyLight::connectSetup(boolean force, boolean reset, boolean format) {
     saveWifiSettings(wifiSsid, wifiPassword); 
     saveTallySettings(tallyControllerIp, tallyLightName); 
   }
-
-  //startPhase(RUN_PHASE);
 }
 
 void TallyLight::connectLoop() {
