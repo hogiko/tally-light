@@ -6,11 +6,7 @@
 #include "NeoPixels.h"
 #include <NeoPixelBus.h>
 
-#include <LittleFS.h>
-#include "FS.h"
-#define fileSystem LittleFS
-
-#include <ArduinoJson.h>
+#include "JsonFileSettings.h"
 
 #define INIT_PHASE    0
 #define CONNECT_PHASE 1
@@ -20,51 +16,6 @@
 #define PIXEL_PIN   2
 
 #define BUTTON_PIN 0
-
-class JsonFileSettings {
-  private:
-    const char* fileName;
-    File        file;
-
-    StaticJsonDocument<512> doc;
-
-  public:
-     JsonFileSettings(const char* fileName)
-       : fileName(fileName) {
-     }
-
-     boolean read() {
-       file = fileSystem.open(fileName, "r");
-       DeserializationError error = deserializeJson(doc, file);
-       return !error;
-     }
-
-     JsonFileSettings& write() {
-       file = fileSystem.open(fileName, "w");
-       return *this;
-     }
-
-     const char* get(const char* name) {
-      return doc[name];
-     }
-
-     JsonFileSettings& set(const char* name, const char* value) {
-       doc[name] = value;
-       return *this;
-     }
-
-     boolean flush() {
-       return serializeJson(doc, file);
-     }
- 
-     void close() {
-       file.close();
-     }
-
-     operator bool() const {
-       return file;
-     }
-};
 
 class TallyLight {
 
